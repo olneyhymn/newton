@@ -35,8 +35,6 @@ def send_tweet(s):
 
 
 def tweet():
-    if not os.path.isfile(tweet_lookup):
-        initialize()
     lookup = shelve.open(tweet_lookup)
     tweets = list(lookup.keys())
     tweets = sorted(tweets, key=lambda tweet: lookup[tweet])
@@ -49,6 +47,9 @@ def tweet():
 
 
 if __name__ == '__main__':
+    if not os.path.isfile(tweet_lookup + ".db"):
+        initialize()
+
     schedule.every(656).minutes.do(tweet)
 
     while True:
