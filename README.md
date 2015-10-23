@@ -1,6 +1,4 @@
-
-Run instructions:
-
+### Run instructions
 
 On this machine:
 ```
@@ -17,4 +15,13 @@ source activate newton
 pip install -r requirements.php
 source activate .env
 python tweet.py
+```
+
+### `.env` File
+
+```
+export NEWTON_CONSUMER_KEY=
+export NEWTON_CONSUMER_SECRET=
+export NEWTON_TOKEN=
+export NEWTON_TOKEN_SECRET=
 ```
