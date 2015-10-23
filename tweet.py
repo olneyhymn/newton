@@ -50,6 +50,7 @@ if __name__ == '__main__':
     if not os.path.isfile(tweet_lookup + ".db"):
         initialize()
 
+    tweet()
     schedule.every(656).minutes.do(tweet)
 
     while True:
