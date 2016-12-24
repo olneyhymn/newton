@@ -41,6 +41,7 @@ def tweet():
     tweets = tweets[0:10]
     shuffle(tweets)
     tweet = tweets[0]
+    tweet = tweet.replace(" / ", "\n")
     lookup[tweet] += 1
     send_tweet(tweet)
     lookup.close()
