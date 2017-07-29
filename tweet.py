@@ -29,13 +29,10 @@ def send_tweet(s):
     }
     auth = tw.OAuth(**cred)
     t = tw.Twitter(auth=auth)
+
+    s = s.replace(" / ", "\n")
     t.statuses.update(status=s)
     print("Sent tweet: {}".format(s))
-
-    db = get_db()
-    db.save({"content": s,
-             "last_sent": int(time.time()),
-             "from": "newton"})
 
 
 def get_db(bucket="olneyhymnbots",
@@ -68,9 +65,13 @@ def tweet(a, b):
     tweets = tweets[0:10]
     shuffle(tweets)
     tweet = tweets[0]
-    tweet = tweet.replace(" / ", "\n")
     send_tweet(tweet)
+
+    db = get_db()
+    db.save({"content": tweet,
+             "last_sent": int(time.time()),
+             "from": "newton"})
 
 
 if __name__ == '__main__':
-    tweet()
+    pass
