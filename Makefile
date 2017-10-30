@@ -8,4 +8,4 @@ prepare: dependencies
 	make clean
 
 clean:
-	git clean -fd
+	git clean -fdx
