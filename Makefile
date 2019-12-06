@@ -1,10 +1,11 @@
+all: deploy
 
-dependencies:
-	STATIC_DEPS=true pip install -Ur requirements.pip -t .
+.PHONY: deploy
+deploy:
+	STATIC_DEPS=true pip3 install -U twitter git+https://github.com/Miserlou/NoDB.git@4616921 -t .
+	rm -rf concurrent/futures
+	serverless deploy
 
-prepare: dependencies
-	rm -f lambda_bundle.zip
-	zip -r lambda_bundle *
-
+.PHONY: clean
 clean:
-	git clean -xfd -e *.zip
+	git clean -fd

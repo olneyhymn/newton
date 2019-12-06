@@ -13,19 +13,19 @@ logging.basicConfig(filename="tweet.log", level=logging.WARNING)
 
 def get_raw_tweets():
     tweets = []
-    with open(tweet_content, "r") as f:
+    with open(tweet_content, "r", encoding="utf-8") as f:
         raw_tweets = f.readlines()
         for tweet in raw_tweets:
             tweets.append(tweet.strip())
     return tweets
 
 
-def send_tweet(s):
+def send_tweet(s, db):
     cred = {
-        "consumer_key": os.environ["NEWTON_CONSUMER_KEY"].strip(),
-        "consumer_secret": os.environ["NEWTON_CONSUMER_SECRET"].strip(),
-        "token": os.environ["NEWTON_TOKEN"].strip(),
-        "token_secret": os.environ["NEWTON_TOKEN_SECRET"].strip(),
+        "consumer_key": os.environ["CONSUMER_KEY"].strip(),
+        "consumer_secret": os.environ["CONSUMER_SECRET"].strip(),
+        "token": os.environ["TOKEN"].strip(),
+        "token_secret": os.environ["TOKEN_SECRET"].strip(),
     }
     auth = tw.OAuth(**cred)
     t = tw.Twitter(auth=auth)
@@ -34,18 +34,19 @@ def send_tweet(s):
     t.statuses.update(status=s)
     print("Sent tweet: {}".format(s))
 
+    db.save({"content": s, "last_sent": int(time.time()), "from": "newton"})
+
 
 def get_db(bucket="olneyhymnbots", serializer="json", index="content"):
     db = NoDB()
     db.bucket = bucket
-    db.human_readable_indexes
+    db.human_readable_indexes = True
     db.serializer = serializer
     db.index = index
     return db
 
 
-def tweets_ordered_by_last_sent_time():
-    db = get_db()
+def tweets_ordered_by_last_sent_time(db):
     last_sent = {}
     for tweet in get_raw_tweets():
         d = db.load(tweet)
@@ -58,15 +59,14 @@ def tweets_ordered_by_last_sent_time():
 
 
 def tweet(a, b):
-    tweets = tweets_ordered_by_last_sent_time()
+    db = get_db()
+    tweets = tweets_ordered_by_last_sent_time(db)
     tweets = tweets[0:10]
     shuffle(tweets)
     tweet = tweets[0]
-    send_tweet(tweet)
-
-    db = get_db()
-    db.save({"content": tweet, "last_sent": int(time.time()), "from": "newton"})
+    tweet = tweet.replace(" / ", "\n")
+    send_tweet(tweet, db)
 
 
 if __name__ == "__main__":
-    pass
+    tweet()
