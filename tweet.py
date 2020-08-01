@@ -35,7 +35,6 @@ def send_tweet(s, db):
     t.statuses.update(status=s)
     print("Sent tweet: {}".format(s))
 
-    db.save({"content": s, "last_sent": int(time.time()), "from": "newton"})
 
 
 def get_db(bucket="olneyhymnbots", serializer="json", index="content"):
@@ -65,8 +64,8 @@ def tweet(a, b):
     tweets = tweets[0:10]
     shuffle(tweets)
     tweet = tweets[0]
-    tweet = tweet.replace(" / ", "\n")
     send_tweet(tweet, db)
+    db.save({"content": tweet, "last_sent": int(time.time()), "from": "newton"})
 
 
 if __name__ == "__main__":
