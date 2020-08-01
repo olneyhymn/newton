@@ -31,6 +31,7 @@ def send_tweet(s, db):
     t = tw.Twitter(auth=auth)
 
     s = s.replace(" / ", "\n")
+    print(f"Tweet {s}")
     t.statuses.update(status=s)
     print("Sent tweet: {}".format(s))
 
